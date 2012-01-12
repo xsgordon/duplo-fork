@@ -17,6 +17,7 @@
 #include "Duplo.h"
 
 #include <fstream>
+#include <string.h>
 #include <time.h>
 
 #include "SourceFile.h"
