@@ -35,15 +35,15 @@ FileType::FILETYPE FileType::GetFileType(const std::string& FileName)
     }
     else if (!FileExtn.compare(FileTypeExtn_CC))
     {
-        return FILETYPE_CPP;
+        return FILETYPE_CXX;
     }
     else if (!FileExtn.compare(FileTypeExtn_HH))
     {
-        return FILETYPE_CPP;
+        return FILETYPE_CXX;
     }
     else if (!FileExtn.compare(FileTypeExtn_CPP))
     {
-        return FILETYPE_CPP;
+        return FILETYPE_CXX;
     }
     else if (!FileExtn.compare(FileTypeExtn_CXX))
     {
@@ -51,11 +51,11 @@ FileType::FILETYPE FileType::GetFileType(const std::string& FileName)
     }
     else if (!FileExtn.compare(FileTypeExtn_H))
     {
-        return FILETYPE_H;
+        return FILETYPE_C;
     }
     else if (!FileExtn.compare(FileTypeExtn_HPP))
     {
-        return FILETYPE_HPP;
+        return FILETYPE_CXX;
     }
     else if (!FileExtn.compare(FileTypeExtn_Java))
     {
