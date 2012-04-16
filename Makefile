@@ -1,5 +1,5 @@
 # Compiler
-CC = g++
+CXX = g++
 
 # Flags
 CXXFLAGS = -O3
@@ -21,11 +21,7 @@ all: ${PROG_NAME}
 
 # Link
 ${PROG_NAME}: ${OBJS}
-	${CC} ${LDFLAGS} -o ${PROG_NAME} ${OBJS}
-
-# Each .cpp file compile
-.cpp.o:
-	${CC} ${CXXFLAGS} -c $*.cpp -o$@
+	${CXX} ${LDFLAGS} -o ${PROG_NAME} ${OBJS}
 
 # Remove all object files
 clean:	
