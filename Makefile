@@ -23,10 +23,6 @@ all: ${PROG_NAME}
 ${PROG_NAME}: ${OBJS}
 	${CC} ${LDFLAGS} -o ${PROG_NAME} ${OBJS}
 
-# Each .cpp file compile
-.cpp.o:
-	${CC} ${CXXFLAGS} -c $*.cpp -o$@
-
 # Remove all object files
 clean:	
 	rm -f *.o
