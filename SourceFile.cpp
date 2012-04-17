@@ -42,10 +42,7 @@ SourceFile::SourceFile(const std::string& fileName, const unsigned int minChars,
 
         // Remove block comments
         if (FileType::FILETYPE_C    == m_FileType ||
-            FileType::FILETYPE_CPP  == m_FileType ||
             FileType::FILETYPE_CXX  == m_FileType ||
-            FileType::FILETYPE_H    == m_FileType ||
-            FileType::FILETYPE_HPP  == m_FileType ||
             FileType::FILETYPE_JAVA == m_FileType ||
             FileType::FILETYPE_CS   == m_FileType ){
             int lineSize = (int)line.size();
@@ -84,10 +81,7 @@ void SourceFile::getCleanLine(const std::string& line, std::string& cleanedLine)
         switch (m_FileType)
         {
             case FileType::FILETYPE_C   :
-            case FileType::FILETYPE_CPP :
             case FileType::FILETYPE_CXX :
-            case FileType::FILETYPE_H   :
-            case FileType::FILETYPE_HPP :
             case FileType::FILETYPE_JAVA:
             case FileType::FILETYPE_CS  :
                 if(i < lineSize-2 && line[i] == '/' && line[i+1] == '/'){
@@ -120,10 +114,7 @@ bool SourceFile::isSourceLine(const std::string& line){
         switch (m_FileType)
         {
             case FileType::FILETYPE_C   :
-            case FileType::FILETYPE_CPP :
             case FileType::FILETYPE_CXX :
-            case FileType::FILETYPE_H   :
-            case FileType::FILETYPE_HPP :
             case FileType::FILETYPE_JAVA:
                 if(tmp[0] == '#')
                 {

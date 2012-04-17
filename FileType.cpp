@@ -2,9 +2,11 @@
 #include "FileType.h"
 
 static const std::string FileTypeExtn_C = "c";
+static const std::string FileTypeExtn_CC = "cc";
 static const std::string FileTypeExtn_CPP = "cpp";
 static const std::string FileTypeExtn_CXX = "cxx";
 static const std::string FileTypeExtn_H = "h";
+static const std::string FileTypeExtn_HH = "hh";
 static const std::string FileTypeExtn_HPP = "hpp";
 static const std::string FileTypeExtn_Java = "java";
 static const std::string FileTypeExtn_CS = "cs";
@@ -31,9 +33,17 @@ FileType::FILETYPE FileType::GetFileType(const std::string& FileName)
     {
         return FILETYPE_C;
     }
+    else if (!FileExtn.compare(FileTypeExtn_CC))
+    {
+        return FILETYPE_CXX;
+    }
+    else if (!FileExtn.compare(FileTypeExtn_HH))
+    {
+        return FILETYPE_CXX;
+    }
     else if (!FileExtn.compare(FileTypeExtn_CPP))
     {
-        return FILETYPE_CPP;
+        return FILETYPE_CXX;
     }
     else if (!FileExtn.compare(FileTypeExtn_CXX))
     {
@@ -41,11 +51,11 @@ FileType::FILETYPE FileType::GetFileType(const std::string& FileName)
     }
     else if (!FileExtn.compare(FileTypeExtn_H))
     {
-        return FILETYPE_H;
+        return FILETYPE_C;
     }
     else if (!FileExtn.compare(FileTypeExtn_HPP))
     {
-        return FILETYPE_HPP;
+        return FILETYPE_CXX;
     }
     else if (!FileExtn.compare(FileTypeExtn_Java))
     {
