@@ -20,6 +20,7 @@ OBJS = StringUtil.o HashUtil.o ArgumentParser.o TextFile.o \
 # Build process
 
 all: ${PROG_NAME}
+	gzip -c ${PROG_NAME}.1 > ${PROG_NAME}.1.gz
 
 # Link
 ${PROG_NAME}: ${OBJS}
@@ -30,11 +31,13 @@ install: duplo
 	install -d ${PREFIX}/share/docs/duplo
 	install -m 0644 README ${PREFIX}/share/docs/duplo
 	install -m 0644 README ${PREFIX}/share/docs/duplo
+	install -m 0644 duplo.1.gz ${PREFIX}/share/man/man1
 
-# Remove all object files
+# Remove all object files and gzipped man page.
 clean:	
-	rm -f *.o
-
+	rm -f ./*.o
+	rm -f ./${PROG_NAME}.1.gz
+	rm -f ./${PROG_NAME}
 
 
 
