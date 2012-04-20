@@ -1,0 +1,39 @@
+.TH DUPLO 1 "April 20, 2012" "Version 0.2.0" 
+.SH NAME
+Duplo 0.2.0 - duplicate source code block finder
+.SH SYNOPSIS
+.B duplo 
+.I [OPTIONS] [INTPUT_FILELIST] [OUTPUT_FILE]
+.SH DESCRIPTION
+Duplo is a tool to find duplicated code blocks in large
+C/C++/Java/C#/VB.Net software systems.
+.SH OPTIONS
+.TP
+\-ml
+minimal block size in lines (default is 4)
+.TP
+\-mc
+minimal characters in line (default is 3)
+lines with less characters are ignored
+.TP
+\-ip
+ignore preprocessor directives
+.TP
+\-d
+ignore file pairs with same name
+.TP
+\-xml
+output file in XML
+.TP
+INTPUT_FILELIST
+input filelist
+.TP
+OUTPUT_FILE
+output file
+.SH VERSION
+0.2.0
+.SH AUTHORS
+Christian M. Ammann (cammann@giants.ch)
+.PP
+Trevor D'Arcy-Evans (tdarcyevans@hotmail.com)
+
