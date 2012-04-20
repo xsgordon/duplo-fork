@@ -30,6 +30,14 @@ input filelist
 .TP
 OUTPUT_FILE
 output file
+.SH EXAMPLE
+Find all Java files in, or under, the current directory and run
+.B duplo
+on them:
+.PP
+$ find . -name '*.java' > filelist.txt
+.PP
+$ duplo filelist.txt results.txt
 .SH VERSION
 0.2.0
 .SH AUTHORS
