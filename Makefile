@@ -28,7 +28,7 @@ ${PROG_NAME}: ${OBJS}
 ${PROG_NAME}.1.gz: ${PROG_NAME}.1
 	gzip -c ${PROG_NAME}.1 > ${PROG_NAME}.1.gz
 
-install: duplo
+install: duplo duplo.1.gz
 	install -m 0755 duplo ${PREFIX}/bin
 	install -d ${PREFIX}/share/docs/duplo
 	install -m 0644 README ${PREFIX}/share/docs/duplo
