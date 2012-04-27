@@ -266,11 +266,12 @@ void Duplo::run(std::string outputFileName){
         std::cout << sourceFile1.getFilename();
 
         int blocks = 0;
-        for (size_t j=0; j<nSourceFiles; j++) {
+        for (size_t j=i+1; j<nSourceFiles; j++) {
           const SourceFile& sourceFile2 = fl.getSourceFilesRaw()[j];
-            if (i > j && !isSameFilename(sourceFile1.getFilename(), sourceFile2.getFilename())) {
-                blocks+=process(sourceFile1, sourceFile2, outfile);
+            if (isSameFilename(sourceFile1.getFilename(), sourceFile2.getFilename())) {
+              continue;
             }
+            blocks+=process(sourceFile1, sourceFile2, outfile);
         }
 
         if (blocks > 0) {
