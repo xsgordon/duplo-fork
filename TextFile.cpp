@@ -44,7 +44,7 @@ bool TextFile::readAll(std::string& all){
         inFile.close();
         std::ostringstream os;
         os.write(buffer, len);
-        delete buffer;
+        delete [] buffer;
         all = os.str();
     } else {
 		std::cout << "Error: Can't open file: " <<  m_fileName <<  ". File doesn't exist or access denied.\n";
