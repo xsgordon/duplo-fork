@@ -19,12 +19,14 @@ OBJS = StringUtil.o HashUtil.o ArgumentParser.o TextFile.o \
 
 # Build process
 
-all: ${PROG_NAME}
-	gzip -c ${PROG_NAME}.1 > ${PROG_NAME}.1.gz
+all: ${PROG_NAME} ${PROG_NAME}.1.gz
 
 # Link
 ${PROG_NAME}: ${OBJS}
 	${CXX} ${LDFLAGS} -o ${PROG_NAME} ${OBJS}
+
+${PROG_NAME}.1.gz: ${PROG_NAME}.1
+	gzip -c ${PROG_NAME}.1 > ${PROG_NAME}.1.gz
 
 install: duplo
 	install -m 0755 duplo ${PREFIX}/bin
