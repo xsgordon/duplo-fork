@@ -94,6 +94,8 @@ void SourceFile::getCleanLine(const std::string& line, std::string& cleanedLine)
                     return;
                 }
                 break;
+            default: // aka FILETYPE_UNKNOWN
+                break;
         }
         cleanedLine.push_back(line[i]);
     }
@@ -142,6 +144,8 @@ bool SourceFile::isSourceLine(const std::string& line) const {
 
                 return std::string::npos == tmp.find(PreProc_VB.c_str(), 0, PreProc_VB.length());
                 }
+                break;
+            default: // aka FILETYPE_UNKNOWN
                 break;
         }
     }
