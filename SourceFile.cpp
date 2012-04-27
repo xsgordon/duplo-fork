@@ -150,7 +150,7 @@ bool SourceFile::isSourceLine(const std::string& line) const {
         }
     }
 
-    bool bRet = ((int)tmp.size() >= m_minChars);
+    bool bRet = (tmp.size() >= m_minChars);
     assert(bRet);
     
     return bRet;
