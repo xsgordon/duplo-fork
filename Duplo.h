@@ -44,7 +44,7 @@ protected:
 	int process(const SourceFile& pSource1, const SourceFile& pSource2, std::ostream& outFile);
 
     const std::string getFilenamePart(const std::string& fullpath);
-    bool isSameFilename(const std::string& filename1, const std::string& filename2);
+    bool isSameFilename(const SourceFile& file1, const SourceFile& file2);
 
 public:
     Duplo(const std::string& listFileName, unsigned int minBlockSize, unsigned int minChars, bool ignorePrepStuff, bool ignoreSameFilename, bool Xml);

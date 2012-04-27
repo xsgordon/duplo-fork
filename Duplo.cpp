@@ -218,8 +218,8 @@ const std::string Duplo::getFilenamePart(const std::string& fullpath){
     return filename;
 }
 
-bool Duplo::isSameFilename(const std::string& filename1, const std::string& filename2){
-    return (getFilenamePart(filename1) == getFilenamePart(filename2) && m_ignoreSameFilename);
+bool Duplo::isSameFilename(const SourceFile& file1, const SourceFile& file2) {
+    return (getFilenamePart(file1.getFilename()) == getFilenamePart(file2.getFilename()) && m_ignoreSameFilename);
 }
 
 void Duplo::run(std::string outputFileName){
@@ -268,7 +268,7 @@ void Duplo::run(std::string outputFileName){
         int blocks = 0;
         for (size_t j=i+1; j<nSourceFiles; j++) {
           const SourceFile& sourceFile2 = fl.getSourceFilesRaw()[j];
-            if (isSameFilename(sourceFile1.getFilename(), sourceFile2.getFilename())) {
+            if (isSameFilename(sourceFile1, sourceFile2)) {
               continue;
             }
             blocks+=process(sourceFile1, sourceFile2, outfile);
