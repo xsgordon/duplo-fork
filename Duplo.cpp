@@ -28,13 +28,61 @@
 #include "TextFile.h"
 #include "ArgumentParser.h"
 
+class FileList {
+  private:
+    std::vector<SourceFile> m_sourceFiles;
+    unsigned m_nFiles;
+    unsigned m_maxLinesPerFile;
+    unsigned m_locsTotal;
+  public:
+    FileList(const TextFile& listOfFiles, unsigned minChars, bool ignorePrepStuff) :
+      m_nFiles(0),
+      m_maxLinesPerFile(0),
+      m_locsTotal(0)
+    {
+      std::vector<std::string> lines;
+      listOfFiles.readLines(lines, true);
+
+      // Create vector with all source files
+      for(int i=0;i<(int)lines.size();i++){
+        if(lines[i].size() > 5){
+          SourceFile pSourceFile(lines[i], minChars, ignorePrepStuff);
+          unsigned numLines = pSourceFile.getNumOfLines();
+          if (numLines > 0) {
+            ++m_nFiles;
+            m_sourceFiles.push_back(pSourceFile);
+            m_locsTotal += numLines;
+            if(m_maxLinesPerFile < numLines){
+              m_maxLinesPerFile = numLines;
+            }
+          }
+        }
+      }
+    }
+
+    unsigned getNFiles() const {
+      return m_nFiles;
+    }
+
+    unsigned getMaxLinesPerFile() const {
+      return m_maxLinesPerFile;
+    }
+
+    unsigned getLOCsTotal() const {
+      return m_locsTotal; 
+    }
+
+    const std::vector<SourceFile>& getSourceFilesRaw() const {
+      return m_sourceFiles;
+    }
+};
+
 Duplo::Duplo(const std::string& listFileName, unsigned int minBlockSize, unsigned int minChars, bool ignorePrepStuff, bool ignoreSameFilename, bool Xml) :
     m_listFileName(listFileName),
     m_minBlockSize(minBlockSize),
     m_minChars(minChars),
     m_ignorePrepStuff(ignorePrepStuff),
     m_ignoreSameFilename(ignoreSameFilename),
-    m_maxLinesPerFile(0),
     m_DuplicateLines(0),
     m_Xml(Xml),
     m_pMatrix(NULL)
@@ -198,58 +246,38 @@ void Duplo::run(std::string outputFileName){
 
     start = clock();
 
-	std::cout << "Loading and hashing files ... ";
-	std::cout.flush();
+    std::cout << "Loading and hashing files ... ";
+    std::cout.flush();
 
-	std::vector<SourceFile> sourceFiles;
-	
-	TextFile listOfFiles(m_listFileName.c_str());
-	std::vector<std::string> lines;
-	listOfFiles.readLines(lines, true);
-	
-    int files = 0;
-    int locsTotal = 0;
+    FileList fl(m_listFileName, m_minChars, m_ignorePrepStuff);
 
-	// Create vector with all source files
-	for(int i=0;i<(int)lines.size();i++){
-		if(lines[i].size() > 5){
-			SourceFile pSourceFile(lines[i], m_minChars, m_ignorePrepStuff);
-            int numLines = pSourceFile.getNumOfLines();
-            if(numLines > 0){
-                files++;
-                sourceFiles.push_back(pSourceFile);
-                locsTotal+=numLines;
-                if(m_maxLinesPerFile < numLines){
-                    m_maxLinesPerFile = numLines;
-                }
-            }
-		}
-	}
-
-	std::cout << "done.\n\n";
+    std::cout << "done.\n\n";
 
     // Generate matrix large enough for all files
-    m_pMatrix = new unsigned char[m_maxLinesPerFile*m_maxLinesPerFile];
-
+    const int maxLinesPerFile = fl.getMaxLinesPerFile();
+    m_pMatrix = new unsigned char[maxLinesPerFile*maxLinesPerFile];
 
     int blocksTotal = 0;
 
-	// Compare each file with each other
-	for(int i=0;i<(int)sourceFiles.size();i++){
-		std::cout << sourceFiles[i].getFilename();
-		int blocks = 0;
-		
-		for(int j=0;j<(int)sourceFiles.size();j++){
-			if(i > j && !isSameFilename(sourceFiles[i].getFilename(), sourceFiles[j].getFilename())){
-				blocks+=process(sourceFiles[i], sourceFiles[j], outfile);
-			}
-		}
+    // Compare each file with each other
+    size_t nSourceFiles = fl.getSourceFilesRaw().size();
+    for (size_t i=0; i<nSourceFiles; i++) {
+        const SourceFile& sourceFile1 = fl.getSourceFilesRaw()[i];
+        std::cout << sourceFile1.getFilename();
 
-		if(blocks > 0){
-			std::cout << " found " << blocks << " block(s)" << std::endl;
-		} else {
-			std::cout << " nothing found" << std::endl;
-		}
+        int blocks = 0;
+        for (size_t j=0; j<nSourceFiles; j++) {
+          const SourceFile& sourceFile2 = fl.getSourceFilesRaw()[j];
+            if (i > j && !isSameFilename(sourceFile1.getFilename(), sourceFile2.getFilename())) {
+                blocks+=process(sourceFile1, sourceFile2, outfile);
+            }
+        }
+
+        if (blocks > 0) {
+            std::cout << " found " << blocks << " block(s)" << std::endl;
+        } else {
+            std::cout << " nothing found" << std::endl;
+        }
         
         blocksTotal+=blocks;
 	}
@@ -261,9 +289,9 @@ void Duplo::run(std::string outputFileName){
 
     if (m_Xml)
     {
-        outfile << "        <summary Num_files=\"" << files <<
+        outfile << "        <summary Num_files=\"" << fl.getNFiles() <<
             "\" Duplicate_blocks=\"" << blocksTotal <<
-            "\" Total_lines_of_code=\"" << locsTotal <<
+            "\" Total_lines_of_code=\"" << fl.getLOCsTotal() <<
             "\" Duplicate_lines_of_code=\"" << m_DuplicateLines <<
             "\" Time=\"" << duration <<
             "\"/>" << std::endl;
@@ -273,14 +301,14 @@ void Duplo::run(std::string outputFileName){
     else
     {
         outfile << "Configuration: " << std::endl;
-        outfile << "  Number of files: " << files << std::endl;
+        outfile << "  Number of files: " << fl.getNFiles() << std::endl;
         outfile << "  Minimal block size: " << m_minBlockSize << std::endl;
         outfile << "  Minimal characters in line: " << m_minChars << std::endl;
         outfile << "  Ignore preprocessor directives: " << m_ignorePrepStuff << std::endl;
         outfile << "  Ignore same filenames: " << m_ignoreSameFilename << std::endl;
         outfile << std::endl;
         outfile << "Results: " << std::endl;
-        outfile << "  Lines of code: " << locsTotal << std::endl;
+        outfile << "  Lines of code: " << fl.getLOCsTotal() << std::endl;
         outfile << "  Duplicate lines of code: " << m_DuplicateLines << std::endl;
         outfile << "  Total " << blocksTotal << " duplicate block(s) found." << std::endl << std::endl;
         outfile << "  Time: " << duration << " seconds" << std::endl;

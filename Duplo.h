@@ -36,7 +36,6 @@ protected:
     unsigned int m_minChars;
     bool m_ignorePrepStuff;
     bool m_ignoreSameFilename;
-    int m_maxLinesPerFile;
     int m_DuplicateLines;
     bool m_Xml;
     unsigned char* m_pMatrix;
