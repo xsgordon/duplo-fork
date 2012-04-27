@@ -24,9 +24,9 @@
 
 SourceFile::SourceFile(const std::string& fileName, const unsigned int minChars, const bool ignorePrepStuff) :
     m_fileName(fileName),
+    m_FileType(FileType::GetFileType(fileName)),
     m_minChars(minChars),
-    m_ignorePrepStuff(ignorePrepStuff),
-    m_FileType(FileType::GetFileType(fileName))
+    m_ignorePrepStuff(ignorePrepStuff)
 {
 	TextFile listOfFiles(m_fileName.c_str());
 
