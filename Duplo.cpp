@@ -34,9 +34,9 @@ Duplo::Duplo(const std::string& listFileName, unsigned int minBlockSize, unsigne
     m_minChars(minChars),
     m_ignorePrepStuff(ignorePrepStuff),
     m_ignoreSameFilename(ignoreSameFilename),
-    m_Xml(Xml),
     m_maxLinesPerFile(0),
     m_DuplicateLines(0),
+    m_Xml(Xml),
     m_pMatrix(NULL)
 {
 }
