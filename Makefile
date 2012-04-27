@@ -2,7 +2,7 @@
 CXX = g++
 
 # Flags
-CXXFLAGS = -O3
+CXXFLAGS = -O3 -Wall -Wextra
 LDFLAGS =  ${CXXFLAGS}
 
 # Define what extensions we use
@@ -36,7 +36,7 @@ install: duplo
 	install -m 0644 duplo.1.gz ${PREFIX}/share/man/man1
 
 # Remove all object files and gzipped man page.
-clean:	
+clean:
 	rm -f ./*.o
 	rm -f ./${PROG_NAME}.1.gz
 	rm -f ./${PROG_NAME}
