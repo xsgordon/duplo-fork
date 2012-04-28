@@ -64,21 +64,3 @@ bool TextFile::readLines(std::vector<std::string>& lines, bool doTrim) const {
 	}
 	return true;
 }
-
-/** 
- * Writes a std::string into a text file.
- */
-bool TextFile::writeAll(const std::string& all) const {
-
-    std::ofstream outFile(m_fileName.c_str(), std::ios::binary);
-    if(outFile.is_open()){
-        outFile << all;
-        outFile.close();
-    } else {
-		std::cout << "Error: Can't open file: " <<  m_fileName <<  ". File doesn't exist or access denied.\n";
-		return false;
-    }
-    
-    return true;
-}
-

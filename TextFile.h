@@ -33,7 +33,6 @@ public:
     TextFile(const std::string& fileName);
     bool readAll(std::string& all) const;
     bool readLines(std::vector<std::string>& lines, bool doTrim) const;
-    bool writeAll(const std::string& all) const;
 };
 
 #endif
