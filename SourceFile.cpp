@@ -156,8 +156,8 @@ bool SourceFile::isSourceLine(const std::string& line) const {
     return bRet;
 }
 
-int SourceFile::getNumOfLines() const {
-	return (int)m_sourceLines.size();
+unsigned SourceFile::getNumOfLines() const {
+	return m_sourceLines.size();
 }
 
 const SourceLine& SourceFile::getLine(const int index) const {
