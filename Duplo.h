@@ -33,12 +33,12 @@ const std::string VERSION = "0.2.0";
 class Duplo {
 protected:
     const std::string m_listFileName;
-    const unsigned int m_minBlockSize;
-    const unsigned int m_minChars;
-    const bool m_ignorePrepStuff;
-    const bool m_ignoreSameFilename;
+    unsigned int m_minBlockSize;
+    unsigned int m_minChars;
+    bool m_ignorePrepStuff;
+    bool m_ignoreSameFilename;
     int m_DuplicateLines;
-    const bool m_Xml;
+    bool m_Xml;
     std::deque<unsigned char> m_pMatrix;
 
     void reportSeq(int line1, int line2, int count, const SourceFile& pSource1, const SourceFile& pSource2, std::ostream& outFile);
@@ -48,8 +48,28 @@ protected:
     bool isSameFilename(const SourceFile& file1, const SourceFile& file2);
 
 public:
-    Duplo(const std::string& listFileName, unsigned int minBlockSize, unsigned int minChars, bool ignorePrepStuff, bool ignoreSameFilename, bool Xml);
+    explicit Duplo(const std::string& listFileName);
     void run(std::string outputFileName);
+
+    void setMinimalBlockSize(unsigned s) {
+      m_minBlockSize = s;
+    }
+
+    void setMinChars(unsigned s) {
+      m_minChars = s;
+    }
+
+    void setIgnorePreprocessor(bool s) {
+      m_ignorePrepStuff = s;
+    }
+
+    void setIgnoreSameFilenamePairs(bool s) {
+      m_ignoreSameFilename = s;
+    }
+
+    void setReportXML(bool s) {
+      m_Xml = s;
+    }
 };
 
 #endif

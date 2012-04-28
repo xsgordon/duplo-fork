@@ -82,14 +82,14 @@ namespace {
   const int MIN_CHARS = 3;
 }
 
-Duplo::Duplo(const std::string& listFileName, unsigned int minBlockSize, unsigned int minChars, bool ignorePrepStuff, bool ignoreSameFilename, bool Xml) :
+Duplo::Duplo(const std::string& listFileName) :
     m_listFileName(listFileName),
-    m_minBlockSize(minBlockSize),
-    m_minChars(minChars),
-    m_ignorePrepStuff(ignorePrepStuff),
-    m_ignoreSameFilename(ignoreSameFilename),
+    m_minBlockSize(0),
+    m_minChars(0),
+    m_ignorePrepStuff(false),
+    m_ignoreSameFilename(false),
     m_DuplicateLines(0),
-    m_Xml(Xml)
+    m_Xml(false)
 { }
 
 void Duplo::reportSeq(int line1, int line2, int count, const SourceFile& pSource1, const SourceFile& pSource2, std::ostream& outFile){
@@ -351,12 +351,21 @@ void showHelp() {
 int main(int argc, char* argv[]) {
   ArgumentParser ap(argc, argv);
 
-  // These two are required arguments
+  std::string output_file = ap.getStr("-o", ""); // required
+  // one of these required
   std::string input_filelist = ap.getStr("-i", "");
-  std::string output_file = ap.getStr("-o", "");
+  std::vector<std::string> files = ap.getNakedArguments();
 
   if (not ap.is("--help") and not (input_filelist.empty() or output_file.empty())) {
-    Duplo duplo(input_filelist, ap.getNumeric("-ml", MIN_BLOCK_SIZE), ap.getNumeric("-mc", MIN_CHARS), ap.is("-ip"), ap.is("-d"), ap.is("-xml"));
+    Duplo duplo(input_filelist);
+
+    // parse optional arguments
+    duplo.setMinimalBlockSize(ap.getNumeric("-ml", MIN_BLOCK_SIZE));
+    duplo.setMinChars(ap.getNumeric("-mc", MIN_CHARS));
+    duplo.setIgnorePreprocessor(ap.is("-ip"));
+    duplo.setIgnoreSameFilenamePairs(ap.is("-d"));
+    duplo.setReportXML(ap.is("-xml"));
+
     duplo.run(output_file);
   } else {
     showHelp();
