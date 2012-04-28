@@ -193,8 +193,7 @@ bool Duplo::isSameFilename(const SourceFile& file1, const SourceFile& file2) {
     return (getFilenamePart(file1.getFilename()) == getFilenamePart(file2.getFilename()) && m_ignoreSameFilename);
 }
 
-void Duplo::run(std::string outputFileName){
-    std::ofstream outfile(outputFileName.c_str(), std::ios::out|std::ios::binary);
+void Duplo::run(std::ostream& outfile) {
 
     if (m_Xml)
     {
@@ -205,11 +204,6 @@ void Duplo::run(std::string outputFileName){
             "\" Min_char_line=\"" << m_minChars << 
             "\" Ignore_prepro=\"" << (m_ignorePrepStuff ? "true" : "false") << 
             "\" Ignore_same_filename=\"" << (m_ignoreSameFilename ? "true" : "false") << "\">" << std::endl;
-    }
-
-    if (!outfile.is_open()) {
-        std::cerr << "Error: Can't open file: " << outputFileName << std::endl;
-        return;
     }
 
     clock_t start, finish;
@@ -285,7 +279,7 @@ void showHelp() {
   std::cout << "       Duplo " << VERSION << " - duplicate source code block finder\n\n";
 
   std::cout << "\nSYNOPSIS\n";
-  std::cout << "       duplo [OPTIONS] [-i INTPUT_FILELIST] -o [OUTPUT_FILE] [FILES]\n";
+  std::cout << "       duplo [OPTIONS] [-i INTPUT_FILELIST] [-o OUTPUT_FILE] [FILES]\n";
 
   std::cout << "\nDESCRIPTION\n";
   std::cout << "       Duplo is a tool to find duplicated code blocks in large\n";
@@ -320,8 +314,6 @@ int main(int argc, char* argv[]) {
   ArgumentParser ap(argc, argv);
   logger.setVerbose(ap.is("-verbose"));
 
-  std::string output_file = ap.getStr("-o", ""); // required
-
   const unsigned minChars = ap.getNumeric("-mc", MIN_CHARS);
   const bool ignorePrepStuff = ap.is("-ip");
 
@@ -334,7 +326,7 @@ int main(int argc, char* argv[]) {
   }
   logger << "done.\n\n";
 
-  if (not ap.is("--help") and not (fileList.getNFiles()==0 or output_file.empty())) {
+  if (not ap.is("--help") and not (fileList.getNFiles()==0)) {
     Duplo duplo(fileList);
 
     // parse optional arguments
@@ -344,7 +336,14 @@ int main(int argc, char* argv[]) {
     duplo.setIgnoreSameFilenamePairs(ap.is("-d"));
     duplo.setReportXML(ap.is("-xml"));
 
-    duplo.run(output_file);
+    std::string output_file_name = ap.getStr("-o", "");
+    if (not output_file_name.empty()) {
+      std::ofstream output_file(output_file_name.c_str(), std::ios::out|std::ios::binary);
+      duplo.run(output_file);
+    } else {
+      duplo.run(std::cout);
+    }
+
   } else {
     showHelp();
   }

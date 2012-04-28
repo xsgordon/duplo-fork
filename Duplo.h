@@ -51,7 +51,7 @@ protected:
 
 public:
     explicit Duplo(const FileList& fileList);
-    void run(std::string outputFileName);
+    void run(std::ostream& os);
 
     void setMinimalBlockSize(unsigned s) {
       m_minBlockSize = s;
