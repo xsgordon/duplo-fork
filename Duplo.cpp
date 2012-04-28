@@ -77,6 +77,11 @@ class FileList {
     }
 };
 
+namespace {
+  const int MIN_BLOCK_SIZE = 4;
+  const int MIN_CHARS = 3;
+}
+
 Duplo::Duplo(const std::string& listFileName, unsigned int minBlockSize, unsigned int minChars, bool ignorePrepStuff, bool ignoreSameFilename, bool Xml) :
     m_listFileName(listFileName),
     m_minBlockSize(minBlockSize),
@@ -309,49 +314,50 @@ void Duplo::run(std::string outputFileName){
     }
 }
 
+
+void showHelp() {
+  std::cout << "\nNAME\n";
+  std::cout << "       Duplo " << VERSION << " - duplicate source code block finder\n\n";
+
+  std::cout << "\nSYNOPSIS\n";
+  std::cout << "       duplo [OPTIONS] [INTPUT_FILELIST] [OUTPUT_FILE]\n";
+
+  std::cout << "\nDESCRIPTION\n";
+  std::cout << "       Duplo is a tool to find duplicated code blocks in large\n";
+  std::cout << "       C/C++/Java/C#/VB.Net software systems.\n\n";
+
+  std::cout << "       -ml              minimal block size in lines (default is " << MIN_BLOCK_SIZE << ")\n";
+  std::cout << "       -mc              minimal characters in line (default is " << MIN_CHARS << ")\n";
+  std::cout << "                        lines with less characters are ignored\n";
+  std::cout << "       -ip              ignore preprocessor directives\n";
+  std::cout << "       -d               ignore file pairs with same name\n";
+  std::cout << "       -xml             output file in XML\n";
+  std::cout << "       INTPUT_FILELIST  input filelist\n";
+  std::cout << "       OUTPUT_FILE      output file\n";
+
+  std::cout << "\nVERSION\n";
+  std::cout << "       " << VERSION << "\n";
+
+  std::cout << "\nAUTHORS\n";
+  std::cout << "       Christian M. Ammann (cammann@giants.ch)\n";
+  std::cout << "       Trevor D'Arcy-Evans (tdarcyevans@hotmail.com)\n\n";
+}
 /**
  * Main routine
  *
  * @param argc  number of arguments
  * @param argv  arguments
  */
-int main(int argc, char* argv[]){
-	ArgumentParser ap(argc, argv);
+int main(int argc, char* argv[]) {
+  ArgumentParser ap(argc, argv);
 
-	const int MIN_BLOCK_SIZE = 4;
-	const int MIN_CHARS = 3;
+  if (!ap.is("--help") && argc > 2) {
+    Duplo duplo(argv[argc-2], ap.getNumeric("-ml", MIN_BLOCK_SIZE), ap.getNumeric("-mc", MIN_CHARS), ap.is("-ip"), ap.is("-d"), ap.is("-xml"));
+    duplo.run(argv[argc-1]);
+  } else {
+    showHelp();
+  }
 
-	if(!ap.is("--help") && argc > 2){
-        Duplo duplo(argv[argc-2], ap.getNumeric("-ml", MIN_BLOCK_SIZE), ap.getNumeric("-mc", MIN_CHARS), ap.is("-ip"), ap.is("-d"), ap.is("-xml"));
-		duplo.run(argv[argc-1]);
-	} else {
-		std::cout << "\nNAME\n";
-		std::cout << "       Duplo " << VERSION << " - duplicate source code block finder\n\n";
-
-		std::cout << "\nSYNOPSIS\n";
-		std::cout << "       duplo [OPTIONS] [INTPUT_FILELIST] [OUTPUT_FILE]\n";
-
-		std::cout << "\nDESCRIPTION\n";
-		std::cout << "       Duplo is a tool to find duplicated code blocks in large\n";
-		std::cout << "       C/C++/Java/C#/VB.Net software systems.\n\n";
-
-        std::cout << "       -ml              minimal block size in lines (default is " << MIN_BLOCK_SIZE << ")\n";
-		std::cout << "       -mc              minimal characters in line (default is " << MIN_CHARS << ")\n";
-		std::cout << "                        lines with less characters are ignored\n";
-		std::cout << "       -ip              ignore preprocessor directives\n";
-		std::cout << "       -d               ignore file pairs with same name\n";
-		std::cout << "       -xml             output file in XML\n";
-		std::cout << "       INTPUT_FILELIST  input filelist\n";
-		std::cout << "       OUTPUT_FILE      output file\n";
-
-		std::cout << "\nVERSION\n";
-		std::cout << "       " << VERSION << "\n";
-
-        std::cout << "\nAUTHORS\n";
-		std::cout << "       Christian M. Ammann (cammann@giants.ch)\n";	
-		std::cout << "       Trevor D'Arcy-Evans (tdarcyevans@hotmail.com)\n\n";	
-	}
-
-    return 0;
+  return 0;
 }
 
