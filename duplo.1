@@ -3,7 +3,7 @@
 Duplo 0.2.0 - duplicate source code block finder
 .SH SYNOPSIS
 .B duplo 
-.I [OPTIONS] [INTPUT_FILELIST] [OUTPUT_FILE]
+.I [OPTIONS] -i [INTPUT_FILELIST] -o [OUTPUT_FILE]
 .SH DESCRIPTION
 Duplo is a tool to find duplicated code blocks in large
 C/C++/Java/C#/VB.Net software systems.
@@ -25,10 +25,10 @@ ignore file pairs with same name
 \-xml
 output file in XML
 .TP
-INTPUT_FILELIST
+-i INTPUT_FILELIST
 input filelist
 .TP
-OUTPUT_FILE
+-i OUTPUT_FILE
 output file
 .SH EXAMPLE
 Find all Java files in, or under, the current directory and run
@@ -37,7 +37,7 @@ on them:
 .PP
 $ find . -name '*.java' > filelist.txt
 .PP
-$ duplo filelist.txt results.txt
+$ duplo -i filelist.txt -o results.txt
 .SH VERSION
 0.2.0
 .SH AUTHORS
