@@ -27,7 +27,7 @@
 
 class TextFile {
 protected:
-    std::string m_fileName;
+    const std::string m_fileName;
 
 public:
     TextFile(const std::string& fileName);
