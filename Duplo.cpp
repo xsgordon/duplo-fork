@@ -329,7 +329,7 @@ int main(int argc, char* argv[]){
 	const int MIN_CHARS = 3;
 
 	if(!ap.is("--help") && argc > 2){
-        Duplo duplo(argv[argc-2], ap.getInt("-ml", MIN_BLOCK_SIZE), ap.getInt("-mc", MIN_CHARS), ap.is("-ip"), ap.is("-d"), ap.is("-xml"));
+        Duplo duplo(argv[argc-2], ap.getNumeric("-ml", MIN_BLOCK_SIZE), ap.getNumeric("-mc", MIN_CHARS), ap.is("-ip"), ap.is("-d"), ap.is("-xml"));
 		duplo.run(argv[argc-1]);
 	} else {
 		std::cout << "\nNAME\n";

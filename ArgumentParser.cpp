@@ -34,14 +34,7 @@ std::string ArgumentParser::getStr(const std::string& s, const std::string& defa
     defaultValue;
 }
 
-int ArgumentParser::getInt(const std::string& s, int defaultValue) const {
-  std::vector<std::string>::const_iterator it = std::find(argv.begin(), argv.end(), s);
-  return it != argv.end() and (it+1) != argv.end() ?
-    atoi((*(it+1)).c_str()) :
-    defaultValue;
-}
-
-float ArgumentParser::getFloat(const std::string& s, float defaultValue) const {
+float ArgumentParser::getNumeric(const std::string& s, float defaultValue) const {
   std::vector<std::string>::const_iterator it = std::find(argv.begin(), argv.end(), s);
   return it != argv.end() and (it+1) != argv.end()?
     atof((*(it+1)).c_str()) :

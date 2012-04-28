@@ -34,8 +34,7 @@ public:
 
 	bool is(const std::string& ) const;
         std::string getStr(const std::string& s, const std::string& defaultValue="") const;
-	int getInt(const std::string& s, int defaultValue) const;
-	float getFloat(const std::string& s, float defaultValue) const;
+        float getNumeric(const std::string& s, float defaultValue) const;
 };
 
 #endif
