@@ -20,7 +20,7 @@
 #include <cstdlib>
 
 ArgumentParser::ArgumentParser(int m_argc, char* m_argv[]) :
-  argv(m_argv, m_argv+m_argc)
+  argv(&m_argv[1], &m_argv[1] + (m_argc-1))
 { }
 
 bool ArgumentParser::is(const std::string& s) const {
