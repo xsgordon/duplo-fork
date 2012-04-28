@@ -24,7 +24,7 @@ ArgumentParser::ArgumentParser(int m_argc, char* m_argv[]){
     argv = m_argv;
 }
 
-bool ArgumentParser::is(const char *s){
+bool ArgumentParser::is(const char *s) const {
     for(int i=0;i<argc;i++){
         if(strcmp(argv[i], s) == 0){
             return true;
@@ -33,7 +33,7 @@ bool ArgumentParser::is(const char *s){
     return false;
 }
 
-const char *ArgumentParser::getStr(const char *s, const char *defaultValue){
+const char *ArgumentParser::getStr(const char *s, const char *defaultValue) const {
     for(int i=0;i<argc;i++){
         if(strcmp(argv[i], s) == 0 && argc > i+1){
             return argv[i+1];
@@ -42,7 +42,7 @@ const char *ArgumentParser::getStr(const char *s, const char *defaultValue){
     return defaultValue;
 }
 
-int ArgumentParser::getInt(const char *s, int defaultValue){
+int ArgumentParser::getInt(const char *s, int defaultValue) const {
     for(int i=0;i<argc;i++){
         if(strcmp(argv[i], s) == 0 && argc > i+1){
             return atoi(argv[i+1]);
@@ -52,7 +52,7 @@ int ArgumentParser::getInt(const char *s, int defaultValue){
     return defaultValue;
 }
 
-float ArgumentParser::getFloat(const char *s, float defaultValue){
+float ArgumentParser::getFloat(const char *s, float defaultValue) const{
     for(int i=0;i<argc;i++){
         if(strcmp(argv[i], s) == 0 && argc > i+1){
             return (float)atof(argv[i+1]);

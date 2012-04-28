@@ -73,7 +73,7 @@ SourceFile::SourceFile(const std::string& fileName, const unsigned int minChars,
 	}
 }
 
-void SourceFile::getCleanLine(const std::string& line, std::string& cleanedLine){
+void SourceFile::getCleanLine(const std::string& line, std::string& cleanedLine) const {
     // Remove single line comments
     cleanedLine.reserve(line.size());
 	int lineSize = (int)line.size();
@@ -99,7 +99,7 @@ void SourceFile::getCleanLine(const std::string& line, std::string& cleanedLine)
     }
 }
 
-bool SourceFile::isSourceLine(const std::string& line){
+bool SourceFile::isSourceLine(const std::string& line) const {
     std::string tmp = StringUtil::trim(line);
 
     // filter min size lines
@@ -152,14 +152,14 @@ bool SourceFile::isSourceLine(const std::string& line){
     return bRet;
 }
 
-int SourceFile::getNumOfLines(){
+int SourceFile::getNumOfLines() const {
 	return (int)m_sourceLines.size();
 }
 
-SourceLine* SourceFile::getLine(const int index){
+SourceLine* SourceFile::getLine(const int index) const {
 	return m_sourceLines[index];
 }
 
-const std::string& SourceFile::getFilename(){
+const std::string& SourceFile::getFilename() const {
 	return m_fileName;
 }

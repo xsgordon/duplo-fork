@@ -45,15 +45,15 @@ protected:
 
     std::vector<SourceLine*> m_sourceLines;
 
-	bool isSourceLine(const std::string& line);
-	void getCleanLine(const std::string& line, std::string& cleanedLine);
+    bool isSourceLine(const std::string& line) const;
+    void getCleanLine(const std::string& line, std::string& cleanedLine) const;
 
 public:
     SourceFile(const std::string& fileName, const unsigned int minChars, const bool ignorePrepStuff);
     
-    int getNumOfLines();
-    SourceLine* getLine(const int index);
-    const std::string& getFilename();
+    int getNumOfLines() const;
+    SourceLine* getLine(const int index) const;
+    const std::string& getFilename() const;
 };
 
 #endif

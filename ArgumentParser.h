@@ -30,10 +30,10 @@ private:
 public:
 	ArgumentParser(int m_argc, char* m_argv[]);
 
-	bool is(const char *s);
-	const char *getStr(const char *s, const char *defaultValue="");
-	int getInt(const char *s, int defaultValue);
-	float getFloat(const char *s, float defaultValue);
+	bool is(const char *s) const;
+	const char *getStr(const char *s, const char *defaultValue="") const;
+	int getInt(const char *s, int defaultValue) const;
+	float getFloat(const char *s, float defaultValue) const;
 };
 
 #endif

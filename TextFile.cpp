@@ -34,7 +34,7 @@ TextFile::TextFile(const std::string& fileName) :
 /** 
  * Reads the whole text file into a std::string.
  */
-bool TextFile::readAll(std::string& all){
+bool TextFile::readAll(std::string& all) const {
     std::ifstream inFile(m_fileName.c_str(), std::ios::in|std::ios::binary|std::ios::ate);
     if(inFile.is_open()){
         unsigned int len = inFile.tellg();
@@ -53,8 +53,7 @@ bool TextFile::readAll(std::string& all){
     return true;
 }
 
-bool TextFile::readLines(std::vector<std::string>& lines, bool doTrim){
-
+bool TextFile::readLines(std::vector<std::string>& lines, bool doTrim) const {
 	std::string list;
 	if(readAll(list)){
 		StringUtil::substitute('\r', ' ', list);
@@ -69,7 +68,7 @@ bool TextFile::readLines(std::vector<std::string>& lines, bool doTrim){
 /** 
  * Writes a std::string into a text file.
  */
-bool TextFile::writeAll(const std::string& all){
+bool TextFile::writeAll(const std::string& all) const {
 
     std::ofstream outFile(m_fileName.c_str(), std::ios::binary);
     if(outFile.is_open()){

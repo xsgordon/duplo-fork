@@ -41,15 +41,15 @@ SourceLine::SourceLine(std::string& line, int lineNumber){
 	m_hashLow = pDigest[1];
 }
 
-int SourceLine::getLineNumber(){
+int SourceLine::getLineNumber() const {
 	return m_lineNumber;
 }
 
-bool SourceLine::equals(SourceLine* pLine){
+bool SourceLine::equals(SourceLine* pLine) const {
 	return (m_hashHigh == pLine->m_hashHigh && m_hashLow == pLine->m_hashLow);
 }
 
-std::string& SourceLine::getLine(){
+const std::string& SourceLine::getLine() const {
     return m_line;
 }
 
