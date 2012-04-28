@@ -40,3 +40,22 @@ float ArgumentParser::getNumeric(const std::string& s, float defaultValue) const
     atof((*(it+1)).c_str()) :
     defaultValue;
 }
+
+std::vector<std::string> ArgumentParser::getNakedArguments() const {
+  std::vector<std::string> noSwitchArgs;
+
+  bool sawSwitch = false;
+  for (size_t i = 0; i<argv.size(); i++) {
+    const bool beginsWithDash = argv[i].find_first_of("-")==0;
+
+    if (not beginsWithDash) {
+      if (not sawSwitch)
+        noSwitchArgs.push_back(argv[i]);
+      sawSwitch = false;
+    } else if (beginsWithDash) {
+      sawSwitch = true;
+    }
+  }
+
+  return noSwitchArgs;
+};

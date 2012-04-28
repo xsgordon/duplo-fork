@@ -35,6 +35,7 @@ public:
 	bool is(const std::string& ) const;
         std::string getStr(const std::string& s, const std::string& defaultValue="") const;
         float getNumeric(const std::string& s, float defaultValue) const;
+        std::vector<std::string> getNakedArguments() const;
 };
 
 #endif
