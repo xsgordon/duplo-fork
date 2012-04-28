@@ -22,18 +22,20 @@
 #ifndef _ARGUMENTPARSER_H_
 #define _ARGUMENTPARSER_H_
 
+#include <string>
+#include <vector>
+
 class ArgumentParser{
 private:
-	int argc;
-	char **argv;
+        const std::vector<std::string> argv;
 
 public:
 	ArgumentParser(int m_argc, char* m_argv[]);
 
-	bool is(const char *s) const;
-	const char *getStr(const char *s, const char *defaultValue="") const;
-	int getInt(const char *s, int defaultValue) const;
-	float getFloat(const char *s, float defaultValue) const;
+	bool is(const std::string& ) const;
+        std::string getStr(const std::string& s, const std::string& defaultValue="") const;
+	int getInt(const std::string& s, int defaultValue) const;
+	float getFloat(const std::string& s, float defaultValue) const;
 };
 
 #endif

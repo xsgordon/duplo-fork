@@ -16,48 +16,34 @@
 
 #include "ArgumentParser.h"
 
+#include <algorithm>
 #include <cstdlib>
-#include <cstring>
 
-ArgumentParser::ArgumentParser(int m_argc, char* m_argv[]){
-    argc = m_argc;
-    argv = m_argv;
+ArgumentParser::ArgumentParser(int m_argc, char* m_argv[]) :
+  argv(m_argv, m_argv+m_argc)
+{ }
+
+bool ArgumentParser::is(const std::string& s) const {
+  return std::find(argv.begin(), argv.end(), s) != argv.end();
 }
 
-bool ArgumentParser::is(const char *s) const {
-    for(int i=0;i<argc;i++){
-        if(strcmp(argv[i], s) == 0){
-            return true;
-        }
-    }
-    return false;
+std::string ArgumentParser::getStr(const std::string& s, const std::string& defaultValue) const {
+  std::vector<std::string>::const_iterator it = std::find(argv.begin(), argv.end(), s);
+  return it != argv.end() and (it+1) != argv.end() ?
+    *(it+1) :
+    defaultValue;
 }
 
-const char *ArgumentParser::getStr(const char *s, const char *defaultValue) const {
-    for(int i=0;i<argc;i++){
-        if(strcmp(argv[i], s) == 0 && argc > i+1){
-            return argv[i+1];
-        }
-    }
-    return defaultValue;
+int ArgumentParser::getInt(const std::string& s, int defaultValue) const {
+  std::vector<std::string>::const_iterator it = std::find(argv.begin(), argv.end(), s);
+  return it != argv.end() and (it+1) != argv.end() ?
+    atoi((*(it+1)).c_str()) :
+    defaultValue;
 }
 
-int ArgumentParser::getInt(const char *s, int defaultValue) const {
-    for(int i=0;i<argc;i++){
-        if(strcmp(argv[i], s) == 0 && argc > i+1){
-            return atoi(argv[i+1]);
-        }
-    }
-    
-    return defaultValue;
-}
-
-float ArgumentParser::getFloat(const char *s, float defaultValue) const{
-    for(int i=0;i<argc;i++){
-        if(strcmp(argv[i], s) == 0 && argc > i+1){
-            return (float)atof(argv[i+1]);
-        }
-    }
-    
-    return defaultValue;
+float ArgumentParser::getFloat(const std::string& s, float defaultValue) const {
+  std::vector<std::string>::const_iterator it = std::find(argv.begin(), argv.end(), s);
+  return it != argv.end() and (it+1) != argv.end()?
+    atof((*(it+1)).c_str()) :
+    defaultValue;
 }

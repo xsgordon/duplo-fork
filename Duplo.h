@@ -31,13 +31,13 @@ const std::string VERSION = "0.2.0";
 
 class Duplo {
 protected:
-    std::string m_listFileName;
-    unsigned int m_minBlockSize;
-    unsigned int m_minChars;
-    bool m_ignorePrepStuff;
-    bool m_ignoreSameFilename;
+    const std::string m_listFileName;
+    const unsigned int m_minBlockSize;
+    const unsigned int m_minChars;
+    const bool m_ignorePrepStuff;
+    const bool m_ignoreSameFilename;
     int m_DuplicateLines;
-    bool m_Xml;
+    const bool m_Xml;
     unsigned char* m_pMatrix;
 
     void reportSeq(int line1, int line2, int count, const SourceFile& pSource1, const SourceFile& pSource2, std::ostream& outFile);
