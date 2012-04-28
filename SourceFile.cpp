@@ -68,7 +68,7 @@ SourceFile::SourceFile(const std::string& fileName, const unsigned int minChars,
 		getCleanLine(tmp, cleaned);
 		
 		if(isSourceLine(cleaned)){
-			m_sourceLines.push_back(new SourceLine(cleaned, i));
+			m_sourceLines.push_back(SourceLine(cleaned, i));
 		}
 	}
 }
@@ -156,7 +156,7 @@ int SourceFile::getNumOfLines() const {
 	return (int)m_sourceLines.size();
 }
 
-SourceLine* SourceFile::getLine(const int index) const {
+const SourceLine& SourceFile::getLine(const int index) const {
 	return m_sourceLines[index];
 }
 

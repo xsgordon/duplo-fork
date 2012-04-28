@@ -38,7 +38,7 @@ public:
 
     int getLineNumber() const;
     const std::string& getLine() const;
-    bool equals(SourceLine* pLine) const;
+    bool equals(const SourceLine& pLine) const;
 };
 
 #endif

@@ -45,8 +45,8 @@ int SourceLine::getLineNumber() const {
 	return m_lineNumber;
 }
 
-bool SourceLine::equals(SourceLine* pLine) const {
-	return (m_hashHigh == pLine->m_hashHigh && m_hashLow == pLine->m_hashLow);
+bool SourceLine::equals(const SourceLine& pLine) const {
+	return (m_hashHigh == pLine.m_hashHigh && m_hashLow == pLine.m_hashLow);
 }
 
 const std::string& SourceLine::getLine() const {

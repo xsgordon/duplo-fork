@@ -46,17 +46,17 @@ Duplo::~Duplo(){
     m_pMatrix = NULL;
 }
 
-void Duplo::reportSeq(int line1, int line2, int count, SourceFile* pSource1, SourceFile* pSource2, std::ostream& outFile){
+void Duplo::reportSeq(int line1, int line2, int count, const SourceFile& pSource1, const SourceFile& pSource2, std::ostream& outFile){
     if (m_Xml)
     {
         outFile << "    <set LineCount=\"" << count << "\">" << std::endl;
-        outFile << "        <block SourceFile=\"" << pSource1->getFilename() << "\" StartLineNumber=\"" << pSource1->getLine(line1)->getLineNumber() << "\"/>" << std::endl;
-        outFile << "        <block SourceFile=\"" << pSource2->getFilename() << "\" StartLineNumber=\"" << pSource2->getLine(line2)->getLineNumber() << "\"/>" << std::endl;
+        outFile << "        <block SourceFile=\"" << pSource1.getFilename() << "\" StartLineNumber=\"" << pSource1.getLine(line1).getLineNumber() << "\"/>" << std::endl;
+        outFile << "        <block SourceFile=\"" << pSource2.getFilename() << "\" StartLineNumber=\"" << pSource2.getLine(line2).getLineNumber() << "\"/>" << std::endl;
         outFile << "        <lines xml:space=\"preserve\">" << std::endl;
         for(int j = 0; j < count; j++)
         {
             // replace various characters/ strings so that it doesn't upset the XML parser
-            std::string tmpstr = pSource1->getLine(j+line1)->getLine();
+            std::string tmpstr = pSource1.getLine(j+line1).getLine();
 
             // " --> '
             StringUtil::StrSub(tmpstr, "\'", "\"", -1);
@@ -78,19 +78,19 @@ void Duplo::reportSeq(int line1, int line2, int count, SourceFile* pSource1, Sou
     }
     else
     {
-        outFile << pSource1->getFilename() << "(" << pSource1->getLine(line1)->getLineNumber() << ")" << std::endl;
-	    outFile << pSource2->getFilename() << "(" << pSource2->getLine(line2)->getLineNumber() << ")" << std::endl;
+        outFile << pSource1.getFilename() << "(" << pSource1.getLine(line1).getLineNumber() << ")" << std::endl;
+	    outFile << pSource2.getFilename() << "(" << pSource2.getLine(line2).getLineNumber() << ")" << std::endl;
 	    for(int j=0;j<count;j++){
-		    outFile << pSource1->getLine(j+line1)->getLine() << std::endl;
+		    outFile << pSource1.getLine(j+line1).getLine() << std::endl;
 		    m_DuplicateLines++;
 	    }
 	    outFile << std::endl;
     }
 }
 
-int Duplo::process(SourceFile* pSource1, SourceFile* pSource2, std::ostream& outFile){
-	const int m = pSource1->getNumOfLines();
-	const int n = pSource2->getNumOfLines();
+int Duplo::process(const SourceFile& pSource1, const SourceFile& pSource2, std::ostream& outFile){
+	const int m = pSource1.getNumOfLines();
+	const int n = pSource2.getNumOfLines();
 
     const unsigned char NONE = 0;
     const unsigned char MATCH = 1;
@@ -100,9 +100,9 @@ int Duplo::process(SourceFile* pSource1, SourceFile* pSource2, std::ostream& out
 
     // Compute matrix
 	for(int y=0; y<m; y++){
-	    SourceLine* pSLine = pSource1->getLine(y);
+	    const SourceLine& pSLine = pSource1.getLine(y);
         for(int x=0; x<n; x++){
-            if(pSLine->equals(pSource2->getLine(x))){
+            if(pSLine.equals(pSource2.getLine(x))){
                 m_pMatrix[x+n*y] = MATCH;
             }
         }
@@ -201,7 +201,7 @@ void Duplo::run(std::string outputFileName){
 	std::cout << "Loading and hashing files ... ";
 	std::cout.flush();
 
-	std::vector<SourceFile*> sourceFiles;
+	std::vector<SourceFile> sourceFiles;
 	
 	TextFile listOfFiles(m_listFileName.c_str());
 	std::vector<std::string> lines;
@@ -213,8 +213,8 @@ void Duplo::run(std::string outputFileName){
 	// Create vector with all source files
 	for(int i=0;i<(int)lines.size();i++){
 		if(lines[i].size() > 5){
-			SourceFile* pSourceFile = new SourceFile(lines[i], m_minChars, m_ignorePrepStuff);
-            int numLines = pSourceFile->getNumOfLines();
+			SourceFile pSourceFile(lines[i], m_minChars, m_ignorePrepStuff);
+            int numLines = pSourceFile.getNumOfLines();
             if(numLines > 0){
                 files++;
                 sourceFiles.push_back(pSourceFile);
@@ -236,11 +236,11 @@ void Duplo::run(std::string outputFileName){
 
 	// Compare each file with each other
 	for(int i=0;i<(int)sourceFiles.size();i++){
-		std::cout << sourceFiles[i]->getFilename();
+		std::cout << sourceFiles[i].getFilename();
 		int blocks = 0;
 		
 		for(int j=0;j<(int)sourceFiles.size();j++){
-			if(i > j && !isSameFilename(sourceFiles[i]->getFilename(), sourceFiles[j]->getFilename())){
+			if(i > j && !isSameFilename(sourceFiles[i].getFilename(), sourceFiles[j].getFilename())){
 				blocks+=process(sourceFiles[i], sourceFiles[j], outfile);
 			}
 		}

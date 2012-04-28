@@ -43,7 +43,7 @@ protected:
     unsigned int m_minChars;
     bool m_ignorePrepStuff;
 
-    std::vector<SourceLine*> m_sourceLines;
+    std::vector<SourceLine> m_sourceLines;
 
     bool isSourceLine(const std::string& line) const;
     void getCleanLine(const std::string& line, std::string& cleanedLine) const;
@@ -52,7 +52,7 @@ public:
     SourceFile(const std::string& fileName, const unsigned int minChars, const bool ignorePrepStuff);
     
     int getNumOfLines() const;
-    SourceLine* getLine(const int index) const;
+    const SourceLine& getLine(const int index) const;
     const std::string& getFilename() const;
 };
 
