@@ -22,6 +22,7 @@
 #ifndef _DUPLO_H_
 #define _DUPLO_H_
 
+#include <deque>
 #include <string>
 #include <iostream>
 
@@ -38,7 +39,7 @@ protected:
     const bool m_ignoreSameFilename;
     int m_DuplicateLines;
     const bool m_Xml;
-    unsigned char* m_pMatrix;
+    std::deque<unsigned char> m_pMatrix;
 
     void reportSeq(int line1, int line2, int count, const SourceFile& pSource1, const SourceFile& pSource2, std::ostream& outFile);
 	int process(const SourceFile& pSource1, const SourceFile& pSource2, std::ostream& outFile);
@@ -48,7 +49,6 @@ protected:
 
 public:
     Duplo(const std::string& listFileName, unsigned int minBlockSize, unsigned int minChars, bool ignorePrepStuff, bool ignoreSameFilename, bool Xml);
-	~Duplo();
     void run(std::string outputFileName);
 };
 

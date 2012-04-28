@@ -84,15 +84,8 @@ Duplo::Duplo(const std::string& listFileName, unsigned int minBlockSize, unsigne
     m_ignorePrepStuff(ignorePrepStuff),
     m_ignoreSameFilename(ignoreSameFilename),
     m_DuplicateLines(0),
-    m_Xml(Xml),
-    m_pMatrix(NULL)
-{
-}
-
-Duplo::~Duplo(){
-    delete[] m_pMatrix;
-    m_pMatrix = NULL;
-}
+    m_Xml(Xml)
+{ }
 
 void Duplo::reportSeq(int line1, int line2, int count, const SourceFile& pSource1, const SourceFile& pSource2, std::ostream& outFile){
     if (m_Xml)
@@ -144,7 +137,7 @@ int Duplo::process(const SourceFile& pSource1, const SourceFile& pSource2, std::
     const unsigned char MATCH = 1;
 
     // Reset matrix data
-    memset(m_pMatrix, NONE, m*n);
+    std::fill(m_pMatrix.begin(), m_pMatrix.end(), NONE);
 
     // Compute matrix
 	for(int y=0; y<m; y++){
@@ -255,7 +248,7 @@ void Duplo::run(std::string outputFileName){
 
     // Generate matrix large enough for all files
     const int maxLinesPerFile = fl.getMaxLinesPerFile();
-    m_pMatrix = new unsigned char[maxLinesPerFile*maxLinesPerFile];
+    m_pMatrix.resize(maxLinesPerFile*maxLinesPerFile);
 
     int blocksTotal = 0;
 
