@@ -185,8 +185,8 @@ void Duplo::run(std::string outputFileName){
             "\" Ignore_same_filename=\"" << (m_ignoreSameFilename ? "true" : "false") << "\">" << std::endl;
     }
 
-    if(!outfile.is_open()){
-        std::cout << "Error: Can't open file: " << outputFileName << std::endl;
+    if (!outfile.is_open()) {
+        std::cerr << "Error: Can't open file: " << outputFileName << std::endl;
         return;
     }
 
