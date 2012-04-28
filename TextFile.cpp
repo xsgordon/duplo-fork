@@ -35,6 +35,9 @@ TextFile::TextFile(const std::string& fileName) :
  * Reads the whole text file into a std::string.
  */
 bool TextFile::readAll(std::string& all) const {
+  if (m_fileName.empty())
+    return true;
+
     std::ifstream inFile(m_fileName.c_str(), std::ios::in|std::ios::binary|std::ios::ate);
     if(inFile.is_open()){
         unsigned int len = inFile.tellg();
@@ -47,8 +50,8 @@ bool TextFile::readAll(std::string& all) const {
         delete [] buffer;
         all = os.str();
     } else {
-		std::cout << "Error: Can't open file: " <<  m_fileName <<  ". File doesn't exist or access denied.\n";
-		return false;
+      std::cout << "Error: Can't open file: " <<  m_fileName <<  ". File doesn't exist or access denied.\n";
+      return false;
     }
     return true;
 }
