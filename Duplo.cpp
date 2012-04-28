@@ -33,8 +33,8 @@ namespace {
   const int MIN_CHARS = 3;
 }
 
-Duplo::Duplo(const std::string& listFileName) :
-    m_listFileName(listFileName),
+Duplo::Duplo(const FileList& fileList) :
+    m_fileList(fileList),
     m_minBlockSize(0),
     m_minChars(0),
     m_ignorePrepStuff(false),
@@ -195,28 +195,21 @@ void Duplo::run(std::string outputFileName){
 
     start = clock();
 
-    std::cout << "Loading and hashing files ... ";
-    std::cout.flush();
-
-    FileList fl(m_listFileName, m_minChars, m_ignorePrepStuff);
-
-    std::cout << "done.\n\n";
-
     // Generate matrix large enough for all files
-    const int maxLinesPerFile = fl.getMaxLinesPerFile();
+    const int maxLinesPerFile = m_fileList.getMaxLinesPerFile();
     m_pMatrix.resize(maxLinesPerFile*maxLinesPerFile);
 
     int blocksTotal = 0;
 
     // Compare each file with each other
-    size_t nSourceFiles = fl.getSourceFilesRaw().size();
+    size_t nSourceFiles = m_fileList.getSourceFilesRaw().size();
     for (size_t i=0; i<nSourceFiles; i++) {
-        const SourceFile& sourceFile1 = fl.getSourceFilesRaw()[i];
+        const SourceFile& sourceFile1 = m_fileList.getSourceFilesRaw()[i];
         std::cout << sourceFile1.getFilename();
 
         int blocks = 0;
         for (size_t j=i+1; j<nSourceFiles; j++) {
-          const SourceFile& sourceFile2 = fl.getSourceFilesRaw()[j];
+          const SourceFile& sourceFile2 = m_fileList.getSourceFilesRaw()[j];
             if (isSameFilename(sourceFile1, sourceFile2)) {
               continue;
             }
@@ -239,9 +232,9 @@ void Duplo::run(std::string outputFileName){
 
     if (m_Xml)
     {
-        outfile << "        <summary Num_files=\"" << fl.getNFiles() <<
+        outfile << "        <summary Num_files=\"" << m_fileList.getNFiles() <<
             "\" Duplicate_blocks=\"" << blocksTotal <<
-            "\" Total_lines_of_code=\"" << fl.getLOCsTotal() <<
+            "\" Total_lines_of_code=\"" << m_fileList.getLOCsTotal() <<
             "\" Duplicate_lines_of_code=\"" << m_DuplicateLines <<
             "\" Time=\"" << duration <<
             "\"/>" << std::endl;
@@ -251,14 +244,14 @@ void Duplo::run(std::string outputFileName){
     else
     {
         outfile << "Configuration: " << std::endl;
-        outfile << "  Number of files: " << fl.getNFiles() << std::endl;
+        outfile << "  Number of files: " << m_fileList.getNFiles() << std::endl;
         outfile << "  Minimal block size: " << m_minBlockSize << std::endl;
         outfile << "  Minimal characters in line: " << m_minChars << std::endl;
         outfile << "  Ignore preprocessor directives: " << m_ignorePrepStuff << std::endl;
         outfile << "  Ignore same filenames: " << m_ignoreSameFilename << std::endl;
         outfile << std::endl;
         outfile << "Results: " << std::endl;
-        outfile << "  Lines of code: " << fl.getLOCsTotal() << std::endl;
+        outfile << "  Lines of code: " << m_fileList.getLOCsTotal() << std::endl;
         outfile << "  Duplicate lines of code: " << m_DuplicateLines << std::endl;
         outfile << "  Total " << blocksTotal << " duplicate block(s) found." << std::endl << std::endl;
         outfile << "  Time: " << duration << " seconds" << std::endl;
@@ -271,7 +264,7 @@ void showHelp() {
   std::cout << "       Duplo " << VERSION << " - duplicate source code block finder\n\n";
 
   std::cout << "\nSYNOPSIS\n";
-  std::cout << "       duplo [OPTIONS] -i [INTPUT_FILELIST] -o [OUTPUT_FILE]\n";
+  std::cout << "       duplo [OPTIONS] [-i INTPUT_FILELIST] -o [OUTPUT_FILE] [FILES]\n";
 
   std::cout << "\nDESCRIPTION\n";
   std::cout << "       Duplo is a tool to find duplicated code blocks in large\n";
@@ -285,6 +278,8 @@ void showHelp() {
   std::cout << "       -xml                output file in XML\n";
   std::cout << "       -i INTPUT_FILELIST  input filelist\n";
   std::cout << "       -o OUTPUT_FILE      output file\n";
+  std::cout << "\n";
+  std::cout << "       Additional arguments are interpreted as input files to be analyzed.\n";
 
   std::cout << "\nVERSION\n";
   std::cout << "       " << VERSION << "\n";
@@ -303,17 +298,27 @@ int main(int argc, char* argv[]) {
   ArgumentParser ap(argc, argv);
 
   std::string output_file = ap.getStr("-o", ""); // required
-  // one of these required
-  std::string input_filelist = ap.getStr("-i", "");
-  std::vector<std::string> files = ap.getNakedArguments();
 
-  if (not ap.is("--help") and not (input_filelist.empty() or output_file.empty())) {
-    Duplo duplo(input_filelist);
+  const unsigned minChars = ap.getNumeric("-mc", MIN_CHARS);
+  const bool ignorePrepStuff = ap.is("-ip");
+
+  std::cout << "Loading and hashing files ... ";
+  std::cout.flush();
+  const std::string input_filelist = ap.getStr("-i", "");
+  std::vector<std::string> files = ap.getNakedArguments();
+  FileList fileList(input_filelist, minChars, ignorePrepStuff);
+  for (unsigned i = 0; i<files.size(); i++) {
+    fileList.addFile(files[i]);
+  }
+  std::cout << "done.\n\n";
+
+  if (not ap.is("--help") and not (fileList.getNFiles()==0 or output_file.empty())) {
+    Duplo duplo(fileList);
 
     // parse optional arguments
     duplo.setMinimalBlockSize(ap.getNumeric("-ml", MIN_BLOCK_SIZE));
-    duplo.setMinChars(ap.getNumeric("-mc", MIN_CHARS));
-    duplo.setIgnorePreprocessor(ap.is("-ip"));
+    duplo.setMinChars(minChars);
+    duplo.setIgnorePreprocessor(ignorePrepStuff);
     duplo.setIgnoreSameFilenamePairs(ap.is("-d"));
     duplo.setReportXML(ap.is("-xml"));
 

@@ -34,7 +34,7 @@ const std::string VERSION = "0.2.0";
 
 class Duplo {
 protected:
-    const std::string m_listFileName;
+    const FileList m_fileList;
     unsigned int m_minBlockSize;
     unsigned int m_minChars;
     bool m_ignorePrepStuff;
@@ -50,7 +50,7 @@ protected:
     bool isSameFilename(const SourceFile& file1, const SourceFile& file2);
 
 public:
-    explicit Duplo(const std::string& listFileName);
+    explicit Duplo(const FileList& fileList);
     void run(std::string outputFileName);
 
     void setMinimalBlockSize(unsigned s) {
