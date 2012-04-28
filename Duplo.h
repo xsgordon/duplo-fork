@@ -26,6 +26,8 @@
 #include <string>
 #include <iostream>
 
+#include "FileList.h"
+
 class SourceFile;
 
 const std::string VERSION = "0.2.0";
