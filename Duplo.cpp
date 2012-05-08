@@ -28,9 +28,31 @@
 #include "TextFile.h"
 #include "ArgumentParser.h"
 
+class Logger {
+  bool m_verbose;
+  std::ostream& m_os;
+  public:
+    explicit Logger(std::ostream& os=std::cout) :
+      m_verbose(false),
+      m_os(os)
+    { }
+
+    void setVerbose(bool verbose=true) {
+      m_verbose = verbose;
+    }
+
+    template <typename T>
+    Logger& operator<<(const T& msg) {
+      if (m_verbose)
+        m_os << msg;
+      return *this;
+    }
+};
+
 namespace {
   const int MIN_BLOCK_SIZE = 4;
   const int MIN_CHARS = 3;
+  Logger logger;
 }
 
 Duplo::Duplo(const FileList& fileList) :
@@ -171,8 +193,7 @@ bool Duplo::isSameFilename(const SourceFile& file1, const SourceFile& file2) {
     return (getFilenamePart(file1.getFilename()) == getFilenamePart(file2.getFilename()) && m_ignoreSameFilename);
 }
 
-void Duplo::run(std::string outputFileName){
-    std::ofstream outfile(outputFileName.c_str(), std::ios::out|std::ios::binary);
+void Duplo::run(std::ostream& outfile) {
 
     if (m_Xml)
     {
@@ -183,11 +204,6 @@ void Duplo::run(std::string outputFileName){
             "\" Min_char_line=\"" << m_minChars << 
             "\" Ignore_prepro=\"" << (m_ignorePrepStuff ? "true" : "false") << 
             "\" Ignore_same_filename=\"" << (m_ignoreSameFilename ? "true" : "false") << "\">" << std::endl;
-    }
-
-    if(!outfile.is_open()){
-        std::cout << "Error: Can't open file: " << outputFileName << std::endl;
-        return;
     }
 
     clock_t start, finish;
@@ -205,7 +221,7 @@ void Duplo::run(std::string outputFileName){
     size_t nSourceFiles = m_fileList.getSourceFilesRaw().size();
     for (size_t i=0; i<nSourceFiles; i++) {
         const SourceFile& sourceFile1 = m_fileList.getSourceFilesRaw()[i];
-        std::cout << sourceFile1.getFilename();
+        logger << sourceFile1.getFilename();
 
         int blocks = 0;
         for (size_t j=i+1; j<nSourceFiles; j++) {
@@ -217,18 +233,17 @@ void Duplo::run(std::string outputFileName){
         }
 
         if (blocks > 0) {
-            std::cout << " found " << blocks << " block(s)" << std::endl;
+            logger << " found " << blocks << " block(s)\n";
         } else {
-            std::cout << " nothing found" << std::endl;
+            logger << " nothing found\n";
         }
-        
+
         blocksTotal+=blocks;
 	}
 
-
     finish = clock();
     duration = (double)(finish - start) / CLOCKS_PER_SEC;
-    std::cout << "Time: "<< duration << " seconds" << std::endl;
+    logger << "Time: "<< duration << " seconds\n";
 
     if (m_Xml)
     {
@@ -264,7 +279,7 @@ void showHelp() {
   std::cout << "       Duplo " << VERSION << " - duplicate source code block finder\n\n";
 
   std::cout << "\nSYNOPSIS\n";
-  std::cout << "       duplo [OPTIONS] [-i INTPUT_FILELIST] -o [OUTPUT_FILE] [FILES]\n";
+  std::cout << "       duplo [OPTIONS] [-i INTPUT_FILELIST] [-o OUTPUT_FILE] [FILES]\n";
 
   std::cout << "\nDESCRIPTION\n";
   std::cout << "       Duplo is a tool to find duplicated code blocks in large\n";
@@ -276,6 +291,7 @@ void showHelp() {
   std::cout << "       -ip                 ignore preprocessor directives\n";
   std::cout << "       -d                  ignore file pairs with same name\n";
   std::cout << "       -xml                output file in XML\n";
+  std::cout << "       -verbose            report progress\n";
   std::cout << "       -i INTPUT_FILELIST  input filelist\n";
   std::cout << "       -o OUTPUT_FILE      output file\n";
   std::cout << "\n";
@@ -296,23 +312,21 @@ void showHelp() {
  */
 int main(int argc, char* argv[]) {
   ArgumentParser ap(argc, argv);
-
-  std::string output_file = ap.getStr("-o", ""); // required
+  logger.setVerbose(ap.is("-verbose"));
 
   const unsigned minChars = ap.getNumeric("-mc", MIN_CHARS);
   const bool ignorePrepStuff = ap.is("-ip");
 
-  std::cout << "Loading and hashing files ... ";
-  std::cout.flush();
+  logger << "Loading and hashing files ... ";
   const std::string input_filelist = ap.getStr("-i", "");
   std::vector<std::string> files = ap.getNakedArguments();
   FileList fileList(input_filelist, minChars, ignorePrepStuff);
   for (unsigned i = 0; i<files.size(); i++) {
     fileList.addFile(files[i]);
   }
-  std::cout << "done.\n\n";
+  logger << "done.\n\n";
 
-  if (not ap.is("--help") and not (fileList.getNFiles()==0 or output_file.empty())) {
+  if (not ap.is("--help") and not (fileList.getNFiles()==0)) {
     Duplo duplo(fileList);
 
     // parse optional arguments
@@ -322,7 +336,14 @@ int main(int argc, char* argv[]) {
     duplo.setIgnoreSameFilenamePairs(ap.is("-d"));
     duplo.setReportXML(ap.is("-xml"));
 
-    duplo.run(output_file);
+    std::string output_file_name = ap.getStr("-o", "");
+    if (not output_file_name.empty()) {
+      std::ofstream output_file(output_file_name.c_str(), std::ios::out|std::ios::binary);
+      duplo.run(output_file);
+    } else {
+      duplo.run(std::cout);
+    }
+
   } else {
     showHelp();
   }

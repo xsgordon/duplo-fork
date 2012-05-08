@@ -50,7 +50,7 @@ bool TextFile::readAll(std::string& all) const {
         delete [] buffer;
         all = os.str();
     } else {
-      std::cout << "Error: Can't open file: " <<  m_fileName <<  ". File doesn't exist or access denied.\n";
+      std::cerr << "Error: Can't open file: " <<  m_fileName <<  ". File doesn't exist or access denied.\n";
       return false;
     }
     return true;
